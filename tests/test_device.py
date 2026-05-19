@@ -172,6 +172,7 @@ def test_tm700_generated_property_annotations_match_parameter_types() -> None:
     stby_sval = type(pump).stby_sval
     actual_spd = type(pump).actual_spd
     drv_current = type(pump).drv_current
+    bearng_wear = type(pump).bearng_wear
     fw_version = type(pump).fw_version
 
     assert pumpg_statn.fget is not None
@@ -196,6 +197,10 @@ def test_tm700_generated_property_annotations_match_parameter_types() -> None:
     assert drv_current.fget is not None
     assert drv_current.fset is None
     assert get_type_hints(drv_current.fget)["return"] is float
+
+    assert bearng_wear.fget is not None
+    assert bearng_wear.fset is None
+    assert get_type_hints(bearng_wear.fget)["return"] is float
 
     assert fw_version.fget is not None
     assert fw_version.fset is None

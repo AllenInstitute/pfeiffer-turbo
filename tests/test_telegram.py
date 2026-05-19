@@ -45,6 +45,15 @@ def test_decode_known_raw_response_frame() -> None:
     assert decoded.data == 321
 
 
+def test_decode_bearing_wear_divides_raw_value_by_100() -> None:
+    payload = "0011032906007575"
+    message = payload + _checksum(payload)
+
+    decoded = decode_telegram(message)
+    assert decoded.parameter == Parameters.BearngWear
+    assert decoded.data == 75.75
+
+
 def test_create_query_matches_documented_rotation_speed_request() -> None:
     telegram = create_telegram(
         parameter=Parameters.ActualSpd,

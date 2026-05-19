@@ -356,7 +356,7 @@ parameters = {
         "Temperature electronic [C]", DataType.INT, "R", unit="C"
     ),
     Parameters.BearngWear: ParameterInfo(
-        "Wear conditions safety bearing [%]", DataType.INT, "R", unit="%"
+        "Wear conditions safety bearing [%]", DataType.FLOAT, "R", unit="%"
     ),
     Parameters.TempPmpBot: ParameterInfo(
         "Temperature pump bottom part [C]", DataType.INT, "R", unit="C"
