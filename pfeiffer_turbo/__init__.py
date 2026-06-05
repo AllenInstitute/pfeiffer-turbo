@@ -1,4 +1,4 @@
-from .device import TM700, TC110
+from .device import TC110, TM700
 from .errors import (
     PfeifferProtocolError,
     PfeifferTransportError,
