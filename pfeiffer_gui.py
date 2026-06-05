@@ -14,7 +14,7 @@ import time
 from typing import Optional
 import serial.tools.list_ports
 
-from pfeiffer_turbo import TM700, TC110, SerialTransport, Access
+from pfeiffer_turbo import TM700, TC110, Access
 from pfeiffer_turbo.parameters import Parameters, parameters
 from pfeiffer_turbo.errors import PfeifferTurboError, PfeifferProtocolError
 from pfeiffer_turbo.telegram import create_telegram
@@ -40,7 +40,9 @@ class PfeifferTurboGUI:
     def _setup_ui(self) -> None:
         """Setup the user interface"""
         # Create main frames
-        connection_frame = ttk.LabelFrame(self.root, text="Connection Settings", padding=10)
+        connection_frame = ttk.LabelFrame(
+            self.root, text="Connection Settings", padding=10
+        )
         connection_frame.pack(fill=tk.X, padx=10, pady=5)
 
         control_frame = ttk.LabelFrame(self.root, text="Pump Control", padding=10)
@@ -113,7 +115,9 @@ class PfeifferTurboGUI:
         )
         self.disconnect_btn.pack(side=tk.LEFT, padx=5)
 
-        self.status_label = ttk.Label(frame, text="Status: Disconnected", foreground="red")
+        self.status_label = ttk.Label(
+            frame, text="Status: Disconnected", foreground="red"
+        )
         self.status_label.pack(fill=tk.X, pady=5)
 
     def _setup_control_frame(self, frame: ttk.LabelFrame) -> None:
@@ -137,23 +141,39 @@ class PfeifferTurboGUI:
         readout_grid.pack(fill=tk.X, pady=5)
 
         # Actual Speed in Hz
-        ttk.Label(readout_grid, text="Actual Speed (Hz):").grid(row=0, column=0, sticky=tk.W, padx=5)
-        self.speed_hz_label = ttk.Label(readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold"))
+        ttk.Label(readout_grid, text="Actual Speed (Hz):").grid(
+            row=0, column=0, sticky=tk.W, padx=5
+        )
+        self.speed_hz_label = ttk.Label(
+            readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold")
+        )
         self.speed_hz_label.grid(row=0, column=1, sticky=tk.W, padx=5)
 
         # Actual Speed in RPM
-        ttk.Label(readout_grid, text="Actual Speed (RPM):").grid(row=0, column=2, sticky=tk.W, padx=5)
-        self.speed_rpm_label = ttk.Label(readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold"))
+        ttk.Label(readout_grid, text="Actual Speed (RPM):").grid(
+            row=0, column=2, sticky=tk.W, padx=5
+        )
+        self.speed_rpm_label = ttk.Label(
+            readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold")
+        )
         self.speed_rpm_label.grid(row=0, column=3, sticky=tk.W, padx=5)
 
         # Drive Current
-        ttk.Label(readout_grid, text="Drive Current (A):").grid(row=1, column=0, sticky=tk.W, padx=5)
-        self.current_label = ttk.Label(readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold"))
+        ttk.Label(readout_grid, text="Drive Current (A):").grid(
+            row=1, column=0, sticky=tk.W, padx=5
+        )
+        self.current_label = ttk.Label(
+            readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold")
+        )
         self.current_label.grid(row=1, column=1, sticky=tk.W, padx=5)
 
         # Drive Voltage
-        ttk.Label(readout_grid, text="Drive Voltage (V):").grid(row=1, column=2, sticky=tk.W, padx=5)
-        self.voltage_label = ttk.Label(readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold"))
+        ttk.Label(readout_grid, text="Drive Voltage (V):").grid(
+            row=1, column=2, sticky=tk.W, padx=5
+        )
+        self.voltage_label = ttk.Label(
+            readout_grid, text="0", foreground="blue", font=("Arial", 12, "bold")
+        )
         self.voltage_label.grid(row=1, column=3, sticky=tk.W, padx=5)
 
         # Auto-refresh checkbox
@@ -171,7 +191,7 @@ class PfeifferTurboGUI:
         control_frame.pack(fill=tk.X, pady=5)
 
         ttk.Label(control_frame, text="Parameter:").pack(side=tk.LEFT, padx=5)
-        
+
         self.param_var = tk.StringVar()
         self.param_combo = ttk.Combobox(
             control_frame, textvariable=self.param_var, state="readonly", width=30
@@ -183,12 +203,18 @@ class PfeifferTurboGUI:
         button_frame.pack(fill=tk.X, pady=5)
 
         self.get_btn = ttk.Button(
-            button_frame, text="Get Value", command=self._get_parameter, state=tk.DISABLED
+            button_frame,
+            text="Get Value",
+            command=self._get_parameter,
+            state=tk.DISABLED,
         )
         self.get_btn.pack(side=tk.LEFT, padx=5)
 
         self.set_btn = ttk.Button(
-            button_frame, text="Set Value", command=self._set_parameter, state=tk.DISABLED
+            button_frame,
+            text="Set Value",
+            command=self._set_parameter,
+            state=tk.DISABLED,
         )
         self.set_btn.pack(side=tk.LEFT, padx=5)
 
@@ -229,7 +255,9 @@ class PfeifferTurboGUI:
             return
 
         self._run_task(
-            lambda: TM700.from_serial(port) if model == "TM700" else TC110.from_serial(port),
+            lambda: (
+                TM700.from_serial(port) if model == "TM700" else TC110.from_serial(port)
+            ),
             on_success=lambda pump: self._on_connected(model, port, pump),
             error_title="Connection Error",
         )
@@ -272,7 +300,6 @@ class PfeifferTurboGUI:
         with self._io_lock:
             for param_id in self.pump._generated_parameter_ids:
                 param = Parameters(param_id)
-                param_info = parameters[param]
                 name = self._camel_to_snake(param.name)
                 param_names.append((name, param))
 
@@ -472,17 +499,26 @@ class PfeifferTurboGUI:
             except AttributeError as exc:
                 error = str(exc)
                 self.root.after(
-                    0, lambda error=error: messagebox.showerror(error_title, f"Cannot read parameter: {error}")
+                    0,
+                    lambda error=error: messagebox.showerror(
+                        error_title, f"Cannot read parameter: {error}"
+                    ),
                 )
             except PfeifferTurboError as exc:
                 error = str(exc)
                 self.root.after(
-                    0, lambda error=error: messagebox.showerror(error_title, f"Communication error: {error}")
+                    0,
+                    lambda error=error: messagebox.showerror(
+                        error_title, f"Communication error: {error}"
+                    ),
                 )
             except Exception as exc:
                 error = str(exc)
                 self.root.after(
-                    0, lambda error=error: messagebox.showerror(error_title, f"Unexpected error: {error}")
+                    0,
+                    lambda error=error: messagebox.showerror(
+                        error_title, f"Unexpected error: {error}"
+                    ),
                 )
             else:
                 if on_success is not None:
